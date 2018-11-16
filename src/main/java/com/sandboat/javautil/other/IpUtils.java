@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author lyk
  * @Title: IpUtils
  * @PACKAGE_NAME com.sandboat.javautil.other
- * @Description: TODO
+ * @Description: 获取真实ip
  * @date 2018/11/1215:01
  */
 public class IpUtils {
