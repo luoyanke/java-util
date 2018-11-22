@@ -2,6 +2,7 @@ package com.sandboat.javautil.other;
 
 
 import com.google.common.collect.Lists;
+import org.springframework.util.ClassUtils;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
@@ -78,5 +79,36 @@ public class ClassScanUtils {
             }
         }
     }
+
+
+    /**获取所有基类*/
+    public static List<Class<?>> getSuperClass(Class<?> clazz){
+        List<Class<?>> clazzs=new ArrayList<Class<?>>();
+        Class<?> suCl=clazz.getSuperclass();
+        while(suCl!=null){
+            System.out.println(suCl.getName());
+            clazzs.add(suCl);
+            suCl=suCl.getSuperclass();
+        }
+        return clazzs;
+    }
+
+    /**判断类是否相等或者继承了该类*/
+    public static Boolean classEquals(Class target,Class soure) {
+        if(target==null) throw new NullPointerException("class must not be null");
+        if (target.equals(soure)) return true;
+
+        List<Class<?>> superClass = ClassScanUtils.getSuperClass(target);
+        for (Class clazz1 : superClass) {
+            if(clazz1.equals(soure)) return true;
+        }
+
+        Class<?>[] allInterfacesForClass = ClassUtils.getAllInterfacesForClass(target);
+        for (Class clazz1 : allInterfacesForClass) {
+            if(clazz1.equals(soure)) return true;
+        }
+        return false;
+    }
+
 
 }
