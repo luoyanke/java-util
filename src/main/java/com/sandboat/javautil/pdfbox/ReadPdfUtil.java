@@ -1,18 +1,22 @@
 package com.sandboat.javautil.pdfbox;
 
+import ch.qos.logback.core.joran.conditional.ElseAction;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.PDFTextStripperByArea;
+import org.springframework.util.StringUtils;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 public class ReadPdfUtil {
 
     /**
      * 提取pdf文本
+     *
      * @param filePath
      * @return
      * @throws IOException
@@ -34,6 +38,7 @@ public class ReadPdfUtil {
 
     /**
      * 获取区域文本
+     *
      * @param filePath
      * @param x
      * @param y
@@ -57,15 +62,49 @@ public class ReadPdfUtil {
     }
 
 
-    public static void main(String[] args) throws IOException {
+    public static String getAreaByText(String filePath, int x, int y, int width, int height) throws IOException {
+        try (PDDocument document = PDDocument.load(new File(filePath))) {
 
-        String s = ReadPdfUtil.extractText("D:\\workspaces\\pdfbox-test\\src\\main\\resources\\告知书.pdf");
-        System.out.println(s);
+            PDFTextStripperByArea stripper = new PDFTextStripperByArea();
+            stripper.setSortByPosition(true);
+            Rectangle rect = new Rectangle(x, y, width, height);
+            stripper.addRegion("class1", rect);
+            PDPage firstPage = document.getPage(0);
+            stripper.extractRegions(firstPage);
+
+            System.out.println("Text in the area:" + rect);
+            return stripper.getTextForRegion("class1");
+        }
+    }
+
+
+
+    public static void main(String[] args) throws IOException {
+        String s = ReadPdfUtil.extractText("E:\\ai-reader\\ai-reader-doc\\卷宗样例\\合同诈骗罪\\观检起诉受[2017]52011400317号\\起诉意见书\\第 11 页.pdf");
+        //System.out.println(s);
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        for (char char1 : s.toCharArray()) {
+            if ('\r' ==char1)
+                continue;
+            else if ('\n'==char1)
+                sb.append("<br/>");
+            else
+                sb.append("<span index=\""+i+"\">" + String.valueOf(char1) + "</span>");
+
+            //
+            i++;
+        }
+        System.out.println(sb.toString());
         s = ReadPdfUtil.extractTextByArea(
-                "D:\\workspaces\\pdfbox-test\\src\\main\\resources\\告知书.pdf",
+                "E:\\ai-reader\\ai-reader-doc\\卷宗样例\\合同诈骗罪\\观检起诉受[2017]52011400317号\\起诉意见书\\第 11 页.pdf",
                 10, 480, 205, 60);
         System.out.println(s);
 
     }
+
+
+
+
 
 }
