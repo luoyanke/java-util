@@ -50,7 +50,21 @@
             <artifactId>pdfbox</artifactId>
             <version>2.0.11</version>
         </dependency>
+
+
+        <dependency>
+            <groupId>cn.huacloud</groupId>
+            <artifactId>platform-sdk</artifactId>
+            <version>2.2.2</version>
+        </dependency>
+
     </dependencies>
+    <repositories>
+        <repository>
+            <id>ai-deploy-release</id>
+            <url>http://172.16.121.31:8081/repository/maven-releases/</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
